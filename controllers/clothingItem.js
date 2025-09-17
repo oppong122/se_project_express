@@ -3,14 +3,15 @@ const STATUS = require("../utils/constant");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
       console.log(item);
       res.status(STATUS.CREATED).send({ data: item });
     })
     .catch((err) => {
       console.log(err);
-      res.status(STATUS.INTERNAL_SERVER_ERROR).send({ message: err.message });
+
+      res.status(STATUS.BAD_REQUEST).send({ message: err.message });
     });
 };
 
@@ -27,8 +28,8 @@ const getItems = (req, res) => {
 
 const updateItem = (req, res) => {
   const { itemId } = req.params;
-  const { imageURL } = req.body;
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageURL } })
+  const { imageUrl } = req.body;
+  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
     .orFail()
     .then((item) => {
       res.status(STATUS.OK).send(item);
@@ -38,13 +39,13 @@ const updateItem = (req, res) => {
       res.status(STATUS.INTERNAL_SERVER_ERROR).send({ message: err.message });
     });
 };
-
+//  URL to Url
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
     .then((item) => {
-      res.status(STATUS.DELETE_SUCCESS).send(item);
+      res.status(STATUS.OK).send(item);
     })
     .catch((err) => {
       console.log(err);
@@ -64,7 +65,7 @@ const likeItem = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      if (err.name === "DocumentNotFounder") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(STATUS.NOT_FOUND).send({ message: err.message });
       } else if (err.name === "CastError") {
         return res.status(STATUS.BAD_REQUEST).send({ message: err.message });
@@ -87,7 +88,7 @@ const disLikeItem = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      if (err.name === "DocumentNotFounder") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(STATUS.NOT_FOUND).send({ message: err.message });
       } else if (err.name === "CastError") {
         return res.status(STATUS.BAD_REQUEST).send({ message: err.message });

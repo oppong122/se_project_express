@@ -37,14 +37,14 @@ const createUser = (req, res) => {
 
 const getUser = (req, res) => {
   const { userId } = req.params;
-  User.findById()
+  User.findById(userId)
     .orFail()
     .then((user) => {
       res.status(STATUS.OK).send(user);
     })
-    .ctach((err) => {
+    .catch((err) => {
       console.log(err);
-      if (err.name === "DocumentNotFounder") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(STATUS.NOT_FOUND).send({ message: err.message });
       } else if (err.name === "CastError") {
         return res.status(STATUS.BAD_REQUEST).send({ message: err.message });

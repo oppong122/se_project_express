@@ -1,5 +1,5 @@
-const mangoose = require("mongoose");
+const mongoose = require("mongoose");
 
-const userSchema = new mangoose.Schema({});
+const userSchema = new mongoose.Schema({});
 
-module.exports = mangoose.model("user", userSchema);
+module.exports = mongoose.model("user", userSchema);

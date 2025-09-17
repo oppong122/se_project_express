@@ -5,7 +5,7 @@ const clothingItemRouter = require("./clothingItem");
 const userRouter = require("./users");
 
 router.use("/users", userRouter);
-router.use("/clothingItem", clothingItemRouter);
+router.use("/items", clothingItemRouter);
 
 router.use((req, res) => {
   res

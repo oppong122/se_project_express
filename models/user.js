@@ -1,8 +1,8 @@
-const mangoose = require("mongoose");
+const mongoose = require("mongoose");
 const validator = require("validator");
-const { validate } = require("./clothingItem");
+// const { validate } = require("./clothingItem");
 
-const userSchema = new mangoose.Schema({
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -21,4 +21,4 @@ const userSchema = new mangoose.Schema({
   },
 });
 
-module.exports = mangoose.model("user", userSchema);
+module.exports = mongoose.model("user", userSchema);

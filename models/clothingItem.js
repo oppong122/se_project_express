@@ -1,14 +1,15 @@
-const mangoose = require("mongoose");
+const mongoose = require("mongoose");
 const validator = require("validator");
 
-const clothingItemSchema = new mangoose.Schema({
+const clothingItemSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: true,
   },
   weather: {
     type: String,
-    require: true,
+    required: true,
+    enum: ["hot", "warm", "cold"],
   },
   imageUrl: {
     type: String,
@@ -19,10 +20,19 @@ const clothingItemSchema = new mangoose.Schema({
     },
   },
   owner: {
-    type: mangoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
+  likes: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: [],
+  },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mangoose.model("clothingItem", clothingItemSchema);
+module.exports = mongoose.model("clothingItem", clothingItemSchema);
