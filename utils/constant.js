@@ -1,4 +1,4 @@
-const error_code = {
+const errorCode = {
   OK: 200,
   CREATED: 201,
   DELETE_SUCCESS: 204,
@@ -9,4 +9,4 @@ const error_code = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-module.exports = error_code;
+module.exports = errorCode;

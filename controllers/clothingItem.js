@@ -5,13 +5,19 @@ const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
-      console.log(item);
+      console.error(item);
       res.status(STATUS.CREATED).send({ data: item });
     })
     .catch((err) => {
-      console.log(err);
-
-      res.status(STATUS.BAD_REQUEST).send({ message: err.message });
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: "Cleint sent invalid data" });
+      }
+      return res
+        .status(STATUS.INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -21,25 +27,13 @@ const getItems = (req, res) => {
       res.status(STATUS.OK).send(items);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(STATUS.INTERNAL_SERVER_ERROR).send({ message: err.message });
+      console.error(err);
+      res
+        .status(STATUS.INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageUrl } = req.body;
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
-    .orFail()
-    .then((item) => {
-      res.status(STATUS.OK).send(item);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(STATUS.INTERNAL_SERVER_ERROR).send({ message: err.message });
-    });
-};
-//  URL to Url
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
@@ -48,8 +42,10 @@ const deleteItem = (req, res) => {
       res.status(STATUS.OK).send(item);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(STATUS.INTERNAL_SERVER_ERROR).send({ message: err.message });
+      console.error(err);
+      res
+        .status(STATUS.INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -64,15 +60,20 @@ const likeItem = (req, res) => {
       res.status(STATUS.OK).send(item);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(STATUS.NOT_FOUND).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res.status(STATUS.BAD_REQUEST).send({ message: err.message });
+        return res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: "Resource not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: "Cleint sent invalid data" });
       }
       return res
         .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -87,22 +88,26 @@ const disLikeItem = (req, res) => {
       res.status(STATUS.OK).send(item);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(STATUS.NOT_FOUND).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res.status(STATUS.BAD_REQUEST).send({ message: err.message });
+        return res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: "Resource not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: "Cleint sent invalid data" });
       }
       return res
         .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: err.message });
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
 module.exports = {
   createItem,
   getItems,
-  updateItem,
   deleteItem,
   likeItem,
   disLikeItem,
