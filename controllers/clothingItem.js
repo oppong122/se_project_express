@@ -43,7 +43,17 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res
+      if (err.name === "CastError") {
+        return res
+          .status(STATUS.BAD_REQUEST)
+          .send({ message: "Cleint sent invalid data" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(STATUS.NOT_FOUND)
+          .send({ message: "Resource not found" });
+      }
+      return res
         .status(STATUS.INTERNAL_SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
