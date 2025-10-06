@@ -1,8 +1,8 @@
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const STATUS = require("../utils/constant");
 const { JWT_SECRET } = require("../utils/config");
-const jwt = require("jsonwebtoken");
 
 // Get all users and return an array to the users or the cleint
 const getUsers = (req, res) => {
@@ -28,24 +28,20 @@ const createUser = (req, res) => {
       .status(STATUS.BAD_REQUEST)
       .send({ message: "name, avatar, email and password are required" });
   }
-  bcrypt
+  return bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => {
-      return User.create({
+    .then((hash) => User.create({
         name,
         avatar,
         email,
         password: hash,
-      });
-    })
-    .then((user) => {
-      res.status(STATUS.CREATED).send({
+      }))
+    .then((user) => res.status(STATUS.CREATED).send({
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
         email: user.email,
-      });
-    })
+      }))
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
@@ -68,7 +64,7 @@ const createUser = (req, res) => {
 
 const getCurrentUser = (req, res) => {
   const { _id: userId } = req.user;
-  User.findById(userId)
+  return User.findById(userId)
     .orFail()
     .then((user) => {
       res.status(STATUS.OK).send(user);
@@ -108,7 +104,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.status(STATUS.OK).send({ token });
+      return res.status(STATUS.OK).send({ token });
     })
     .catch((err) => {
       console.error(err);
@@ -141,7 +137,7 @@ const updateCurrentUser = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if ((err.name = "validationError")) {
+      if (err.name === "validationError") {
         return res
           .status(STATUS.BAD_REQUEST)
           .send({ message: "Invalid data for profile update" });
@@ -151,6 +147,9 @@ const updateCurrentUser = (req, res) => {
           .status(STATUS.NOT_FOUND)
           .send({ message: "Resource not found" });
       }
+      return res
+        .status(STATUS.INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

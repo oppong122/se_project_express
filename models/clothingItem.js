@@ -30,7 +30,7 @@ const clothingItemSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     default: [],
   },
-  createAt: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },

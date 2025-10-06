@@ -13,7 +13,7 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+          .send({ message: "Client sent invalid data" });
       }
       return res
         .status(STATUS.INTERNAL_SERVER_ERROR)
@@ -36,24 +36,25 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
+      // checking if the item belongs to the logged in user
       if (item.owner.toString() !== req.user._id) {
         return res
           .status(STATUS.FORBIDDEN)
           .send({ message: "You cannot delete someone else's item" });
       }
-      return item
-        .findByIdAndDelete(itemId)
-        .then(() => res.send({ message: "Item deleted successfully" }));
+      return ClothingItem.deleteOne({ _id: itemId }).then(() =>
+        res.send({ message: "Item deleted successfully" })
+      );
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
         return res
           .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+          .send({ message: "Client sent invalid data" });
       }
       if (err.name === "DocumentNotFoundError") {
         return res
