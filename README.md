@@ -25,3 +25,16 @@ I started by creating 3 differnt folders for Controllers, Models, and Routes whi
 2. Models: On the other hand defines what my data may look like and how it is stored in my database, lemme use ClothingItem model as an example, this model defines fields like name, weather, imageUrl, owner plus all their validation rules. And this is where Mongoose.schema is use, models seems to me as blue-print for mongoDB.
 
 3. Routes: Finally, after we got our logics(controllers) ans how our data should look like(Model), routes are created which is the endpoints of our database(API's). this route act like a traffic controller, it matches the requested Url to the correct controller.
+
+<!-- The Purpose and Functionalities of Sprint 13 (Actual Middleware and Authoriztion (PROTECTION)) -->
+
+1. This is the continuetion of sprint 12. In this project my user schemer was expanded to include an email and password to our users. And some libraries like "bcrypt" and "jsonwebtoken(jwt)" was installed for authorization and authenicating these emails and password. They have to be valid email and passwords, both are also required for a new user to sign in my database.
+
+2. I Created an actual middleware for this database for getting the current users and updating name and avatar, that if the user does not have the token from the middleware(authorization token) they can not get any information of the current user.
+
+3. Again my createUser function was updated to include email and password, the endpoint was changed to signup, basically before you can create a new user it requires you to use valid email, password etc to sign up as a new user.
+
+4. A user login was created with the endpoint signin, which requires only email and password, during this process i have to hash the password and validate the email. This is where a user can login for an authorized token to get the currentUser.
+
+5. I also created the updateCurrentUser function takes only name and avatar to update the current user but protected with an authorization. So before you can update the corrent user you need a valid token to be authorized
+   overall it was very interesting and challenging project which made me learn how to create actual middleware(auth.js) to protect my routes
