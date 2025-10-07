@@ -7,6 +7,7 @@ const cors = require("cors");
 const app = express();
 const { PORT = 3001 } = process.env;
 const { login, createUser } = require("./controllers/users");
+const { getItems } = require("./controllers/clothingItem");
 const mainRouter = require("./routes/index");
 
 mongoose
@@ -22,6 +23,7 @@ app.use(express.json());
 // My public routes
 app.post("/signin", login);
 app.post("/signup", createUser);
+app.get("/", getItems);
 
 // app.use(auth);
 app.use("/", mainRouter);

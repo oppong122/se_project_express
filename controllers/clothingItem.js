@@ -39,7 +39,6 @@ const deleteItem = (req, res) => {
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
-      // checking if the item belongs to the logged in user
       if (item.owner.toString() !== req.user._id) {
         return res
           .status(STATUS.FORBIDDEN)

@@ -5,9 +5,10 @@ const clothingItemRouter = require("./clothingItem");
 const userRouter = require("./users");
 const auth = require("../middlewares/auth");
 
+router.use(auth);
 router.use("/items", clothingItemRouter);
 // Protected Routes
-router.use(auth);
+
 router.use("/users", userRouter);
 
 router.use((req, res) => {
