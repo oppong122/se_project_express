@@ -1,7 +1,6 @@
 const errorCode = {
   OK: 200,
   CREATED: 201,
-  DELETE_SUCCESS: 204,
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,

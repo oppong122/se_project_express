@@ -4,22 +4,6 @@ const User = require("../models/user");
 const STATUS = require("../utils/constant");
 const { JWT_SECRET } = require("../utils/config");
 
-// Get all users and return an array to the users or the cleint
-const getUsers = (req, res) => {
-  console.error("getUsers controller");
-  User.find({})
-    // .select("name")
-    .then((users) => {
-      res.status(STATUS.OK).send(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
-};
-
 // Creating user
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
@@ -30,18 +14,22 @@ const createUser = (req, res) => {
   }
   return bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => User.create({
+    .then((hash) =>
+      User.create({
         name,
         avatar,
         email,
         password: hash,
-      }))
-    .then((user) => res.status(STATUS.CREATED).send({
+      })
+    )
+    .then((user) =>
+      res.status(STATUS.CREATED).send({
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
         email: user.email,
-      }))
+      })
+    )
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
@@ -137,7 +125,7 @@ const updateCurrentUser = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "validationError") {
+      if (err.name === "ValidationError") {
         return res
           .status(STATUS.BAD_REQUEST)
           .send({ message: "Invalid data for profile update" });
@@ -154,7 +142,6 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,
