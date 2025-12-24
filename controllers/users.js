@@ -3,14 +3,15 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const STATUS = require("../utils/constant");
 const { JWT_SECRET } = require("../utils/config");
+const { BadRequestError, NotFoundError, ConflictError } = require("../errors");
 
 // Creating user
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   if (!name || !avatar || !email || !password) {
-    return res
-      .status(STATUS.BAD_REQUEST)
-      .send({ message: "name, avatar, email and password are required" });
+    return next(
+      new BadRequestError("name, avatar, email and password are required")
+    );
   }
   return bcrypt
     .hash(req.body.password, 10)
@@ -33,24 +34,18 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.code === 11000) {
-        return res
-          .status(STATUS.CONFLICT)
-          .send({ message: "Conflict error occured" });
+        return next(new ConflictError("User's email already exist"));
       }
       if (err.name === "ValidationError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+        return next(new BadRequestError("Cleint sent invalid data"));
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
 // getting users by id
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const { _id: userId } = req.user;
   return User.findById(userId)
     .orFail()
@@ -60,30 +55,21 @@ const getCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: "Resource not found" });
+        return next(new NotFoundError("Resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+        return next(new BadRequestError("Cleint sent invalid data"));
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
 // User login
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res
-      .status(STATUS.BAD_REQUEST)
-      .send({ message: "Email and password are required " });
+    return next(new BadRequestError("Email and password are required"));
   }
-  //   const normailizedEmail = String(email).toLowerCase().trim();
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -94,16 +80,13 @@ const login = (req, res) => {
       });
       return res.status(STATUS.OK).send({ token });
     })
-    .catch((err) => {
-      console.error(err);
-      res
-        .status(STATUS.UNAUTHORIZED)
-        .send({ message: "Incorrect email or password" });
+    .catch(() => {
+      next(new NotFoundError("Incorrect email or password"));
     });
 };
 
 // updating Current user
-const updateCurrentUser = (req, res) => {
+const updateCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, avatar } = req.body;
 
@@ -126,18 +109,12 @@ const updateCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Invalid data for profile update" });
+        return next(new BadRequestError("Invalid data for profile update"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: "Resource not found" });
+        return next(new NotFoundError("Resource not found"));
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 

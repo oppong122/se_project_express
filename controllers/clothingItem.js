@@ -1,7 +1,8 @@
 const ClothingItem = require("../models/clothingItem");
 const STATUS = require("../utils/constant");
+const { BadRequestError, NotFoundError, ForbidenError } = require("../errors");
 
-const createItem = (req, res) => {
+const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
@@ -11,38 +12,31 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Client sent invalid data" });
+        return next(new BadRequestError("Cleint sent invalid data"));
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
-const getItems = (req, res) => {
+const getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((items) => {
       res.status(STATUS.OK).send(items);
     })
-    .catch((err) => {
-      console.error(err);
-      res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+    .catch(() => {
+      next(new NotFoundError("Incorrect email or password"));
     });
 };
 
-const deleteItem = (req, res) => {
+const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
   ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        return res
-          .status(STATUS.FORBIDDEN)
-          .send({ message: "You cannot delete someone else's item" });
+        return next(
+          new ForbidenError("You cannot delete someone else's item")
+        ).send({ message: "You cannot delete someone else's item" });
       }
       return ClothingItem.deleteOne({ _id: itemId }).then(() =>
         res.send({ message: "Item deleted successfully" })
@@ -50,23 +44,17 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Client sent invalid data" });
-      }
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: "Resource not found" });
+        return next(new NotFoundError("Resource not found"));
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      if (err.name === "CastError") {
+        return next(new BadRequestError("Cleint sent invalid data"));
+      }
+      return next(err);
     });
 };
 
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
@@ -79,22 +67,17 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: "Resource not found" });
+        return next(new NotFoundError("Resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+        next(new BadRequestError("Cleint sent invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
-const disLikeItem = (req, res) => {
+const disLikeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -107,18 +90,13 @@ const disLikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(STATUS.NOT_FOUND)
-          .send({ message: "Resource not found" });
+        return next(new NotFoundError("Resource not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(STATUS.BAD_REQUEST)
-          .send({ message: "Cleint sent invalid data" });
+        next(new BadRequestError("Cleint sent invalid data"));
+      } else {
+        next(err);
       }
-      return res
-        .status(STATUS.INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
