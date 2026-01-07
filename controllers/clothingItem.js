@@ -2,7 +2,7 @@ const ClothingItem = require("../models/clothingItem");
 const STATUS = require("../utils/constant");
 const { BadRequestError, NotFoundError, ForbidenError } = require("../errors");
 
-const createItem = (req, res, next) => {
+const createClothingItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => {
@@ -101,7 +101,7 @@ const disLikeItem = (req, res, next) => {
 };
 
 module.exports = {
-  createItem,
+  createClothingItem,
   getItems,
   deleteItem,
   likeItem,

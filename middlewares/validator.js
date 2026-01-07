@@ -10,19 +10,26 @@ const validateURL = (value, helper) => {
 
 const objectId = Joi.string().hex().length(24);
 
-module.exports.validateItemBody = celebrate({
+module.exports.validateCreateClothingItems = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     imageUrl: Joi.string().custom(validateURL).required(),
   }),
 });
 
-module.exports.validateUserBody = celebrate({
+module.exports.validateSignup = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     avatar: Joi.string().custom(validateURL).required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
+  }),
+});
+
+module.exports.validateUpdateUser = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    avatar: Joi.string().custom(validateURL).required(),
   }),
 });
 

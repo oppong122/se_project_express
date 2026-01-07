@@ -38,3 +38,15 @@ I started by creating 3 differnt folders for Controllers, Models, and Routes whi
 
 5. I also created the updateCurrentUser function takes only name and avatar to update the current user but protected with an authorization. So before you can update the corrent user you need a valid token to be authorized
    overall it was very interesting and challenging project which made me learn how to create actual middleware(auth.js) to protect my routes
+
+## Sprint 15 Projcet
+
+1. Frontend link to my Repo
+   https://github.com/oppong122/se_project_react.git
+
+2. Check this vidoe
+   https://drive.google.com/file/d/16eMCujExn085V3qYCRNuFfJ2rZ5EP7FD/view?usp=share_link where I describe my
+   project and some challenges I faced while building it.
+
+3. My backend Domain
+   https://api.wtwr-demonstration.chickenkiller.com

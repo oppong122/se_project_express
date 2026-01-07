@@ -10,8 +10,7 @@ const errorHandler = require("./middlewares/error-handler");
 
 const app = express();
 const { PORT = 3001 } = process.env;
-const { login, createUser } = require("./controllers/users");
-const { getItems } = require("./controllers/clothingItem");
+
 const mainRouter = require("./routes/index");
 
 mongoose
@@ -23,10 +22,6 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
-
-app.post("/signin", login);
-app.post("/signup", createUser);
-app.get("/", getItems);
 
 app.use(requestLogger);
 app.use("/", mainRouter);

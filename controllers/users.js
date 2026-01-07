@@ -80,8 +80,8 @@ const login = (req, res, next) => {
       });
       return res.status(STATUS.OK).send({ token });
     })
-    .catch(() => {
-      next(new NotFoundError("Incorrect email or password"));
+    .catch((err) => {
+      next(err);
     });
 };
 
