@@ -7,14 +7,11 @@ const {
 
 const {
   createClothingItem,
-  getItems,
 
   deleteItem,
   likeItem,
   disLikeItem,
 } = require("../controllers/clothingItem");
-
-router.get("/", getItems);
 
 router.use(auth);
 router.post("/", validateCreateClothingItems, createClothingItem);

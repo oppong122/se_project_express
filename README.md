@@ -41,12 +41,7 @@ I started by creating 3 differnt folders for Controllers, Models, and Routes whi
 
 ## Sprint 15 Projcet
 
-1. Frontend link to my Repo
-   https://github.com/oppong122/se_project_react.git
+1. [Frontend Ripository](https://github.com/oppong122/se_project_react.git)
 
-2. Check this vidoe
-   https://drive.google.com/file/d/16eMCujExn085V3qYCRNuFfJ2rZ5EP7FD/view?usp=share_link where I describe my
-   project and some challenges I faced while building it.
-
-3. My backend Domain
-   https://api.wtwr-demonstration.chickenkiller.com
+2. [Project Demo Video](/Users/isaacboateng/Downloads/IsaacBoateng-Project15Pitch-googleCloudDeployment.mp4)
+3. [Backend API Domain](https://api.wtwr-demonstration.chickenkiller.com)

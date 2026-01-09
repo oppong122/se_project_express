@@ -1,6 +1,6 @@
 const ClothingItem = require("../models/clothingItem");
 const STATUS = require("../utils/constant");
-const { BadRequestError, NotFoundError, ForbidenError } = require("../errors");
+const { BadRequestError, NotFoundError, ForbiddenError } = require("../errors");
 
 const createClothingItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
@@ -35,7 +35,7 @@ const deleteItem = (req, res, next) => {
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
         return next(
-          new ForbidenError("You cannot delete someone else's item")
+          new ForbiddenError("You cannot delete someone else's item")
         ).send({ message: "You cannot delete someone else's item" });
       }
       return ClothingItem.deleteOne({ _id: itemId }).then(() =>
@@ -70,10 +70,9 @@ const likeItem = (req, res, next) => {
         return next(new NotFoundError("Resource not found"));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError("Cleint sent invalid data"));
-      } else {
-        next(err);
+        return next(new BadRequestError("Cleint sent invalid data"));
       }
+      return next(err);
     });
 };
 
@@ -93,10 +92,9 @@ const disLikeItem = (req, res, next) => {
         return next(new NotFoundError("Resource not found"));
       }
       if (err.name === "CastError") {
-        next(new BadRequestError("Cleint sent invalid data"));
-      } else {
-        next(err);
+        return next(new BadRequestError("Cleint sent invalid data"));
       }
+      return next(err);
     });
 };
 

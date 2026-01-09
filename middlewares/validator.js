@@ -13,6 +13,7 @@ const objectId = Joi.string().hex().length(24);
 module.exports.validateCreateClothingItems = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
+    weather: Joi.string().required(),
     imageUrl: Joi.string().custom(validateURL).required(),
   }),
 });
