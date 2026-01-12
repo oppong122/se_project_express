@@ -36,7 +36,7 @@ const deleteItem = (req, res, next) => {
       if (item.owner.toString() !== req.user._id) {
         return next(
           new ForbiddenError("You cannot delete someone else's item")
-        ).send({ message: "You cannot delete someone else's item" });
+        );
       }
       return ClothingItem.deleteOne({ _id: itemId }).then(() =>
         res.send({ message: "Item deleted successfully" })

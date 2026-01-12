@@ -7,13 +7,14 @@ const {
 
 const {
   createClothingItem,
-
+  getItems,
   deleteItem,
   likeItem,
   disLikeItem,
 } = require("../controllers/clothingItem");
 
 router.use(auth);
+router.get("/", getItems);
 router.post("/", validateCreateClothingItems, createClothingItem);
 router.delete("/:itemId", validateItemId, deleteItem);
 router.put("/:itemId/likes", validateItemId, likeItem);
