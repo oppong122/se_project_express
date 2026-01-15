@@ -3,17 +3,13 @@ const STATUS = require("../utils/constant");
 
 const clothingItemRouter = require("./clothingItem");
 const userRouter = require("./users");
-const { getItems, createClothingItem } = require("../controllers/clothingItem");
-const {
-  validateLogin,
-  validateSignup,
-  validateCreateClothingItems,
-} = require("../middlewares/validator");
+const { getItems } = require("../controllers/clothingItem");
+const { validateLogin, validateSignup } = require("../middlewares/validator");
 
 const { login, createUser } = require("../controllers/users");
 
-router.get("/", getItems);
-router.post("/", validateCreateClothingItems, createClothingItem);
+router.get("/items", getItems);
+
 router.post("/signin", validateLogin, login);
 router.post("/signup", validateSignup, createUser);
 

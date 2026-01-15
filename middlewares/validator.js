@@ -10,7 +10,7 @@ const validateURL = (value, helper) => {
 
 const objectId = Joi.string().hex().length(24);
 
-module.exports.validateCreateClothingItems = celebrate({
+module.exports.validateCreateClothingItem = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
     weather: Joi.string().required(),
