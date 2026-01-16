@@ -14,13 +14,26 @@ const { PORT = 3001 } = process.env;
 const mainRouter = require("./routes/index");
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect("mongodb://127.0.0.1:27017/wtwr_db") //136.119.121.238
   .then(() => {
     console.error("Connected to MongoDB");
   })
   .catch(console.error);
 
-app.use(cors());
+const allowedOrigins = ["http://localhost:3000", "http://136.119.121.238", "*"];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 //Crash test
