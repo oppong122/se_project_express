@@ -20,7 +20,10 @@ mongoose
   })
   .catch(console.error);
 
-const allowedOrigins = ["http://localhost:3000", "http://136.119.121.238", "*"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://api.wtwr-demonstration.chickenkiller.com",
+];
 
 app.use(
   cors({
