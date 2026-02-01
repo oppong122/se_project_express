@@ -13,7 +13,7 @@ router.get("/items", getItems);
 router.post("/signin", validateLogin, login);
 router.post("/signup", validateSignup, createUser);
 
-router.use("/users", userRouter);
+router.use("/Users", userRouter);
 router.use("/items", clothingItemRouter);
 
 router.use((req, res) => {
