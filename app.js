@@ -37,6 +37,11 @@ app.use(
     credentials: true,
   })
 );
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "API is running" });
+});
+
 app.use(express.json());
 
 //Crash test
