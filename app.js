@@ -22,7 +22,8 @@ mongoose
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://api.wtwr-demonstration.chickenkiller.com",
+  "https://wtwr-demonstration.chickenkiller.com",
+  "https://www.wtwr-demonstration.chickenkiller.com",
 ];
 
 app.use(
@@ -37,6 +38,7 @@ app.use(
     credentials: true,
   })
 );
+app.options("*", cors());
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "API is running" });
